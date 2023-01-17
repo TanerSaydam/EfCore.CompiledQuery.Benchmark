@@ -16,17 +16,17 @@ namespace EfCore.CompiledQuery.Benchmark
         }
 
         [Benchmark(Baseline = true)]
-        public Customer? GetById()
+        public async Task<Customer?> GetById()
         {
-            //using var context = new AppDbContext();
-            //return context.GetCustomerById(Id);            
+            using var context = new AppDbContext();
+            return await context.GetCustomerById(Id);
         }
 
         [Benchmark]
-        public Customer? GetByIdCompiled()
+        public async Task<Customer?> GetByIdCompiled()
         {
-            //using var context = new AppDbContext();
-            //return context.GetCustomerByIdCompiled(Id);
+            using var context = new AppDbContext();
+            return await context.GetCustomerByIdCompiled(Id);
         }
     }
 }

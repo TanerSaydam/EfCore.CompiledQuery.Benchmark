@@ -4,7 +4,20 @@ using Microsoft.EntityFrameworkCore;
 namespace EfCore.CompiledQuery.Benchmark
 {
     public class AppDbContext : DbContext
-    {        
+    {
+        private static readonly Func<AppDbContext, long, Task<Customer?>> GetById =
+            EF.CompileAsyncQuery((AppDbContext context, long id) =>
+            context.Set<Customer>().AsNoTracking().FirstOrDefault(p => p.Id == id));
+
+        public async Task<Customer?> GetCustomerByIdCompiled(long id)
+        {
+            return await GetById(this,id);
+        }
+
+        public async Task<Customer?> GetCustomerById(long id)
+        {
+            return await Set<Customer>().AsNoTracking().FirstOrDefaultAsync(p=> p.Id == id);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>(builder =>
